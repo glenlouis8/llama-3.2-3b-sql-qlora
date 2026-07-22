@@ -6,14 +6,14 @@ Fine-tuning `meta-llama/Llama-3.2-3B-Instruct` on `b-mc2/sql-create-context` (~7
 
 ## Results
 
-Evaluated on a held-out 5% split (2,601 examples, seed=42).
+Evaluated on a held-out 5% split (3,929 examples, seed=42).
 
 | Metric | Before | After | Delta |
 |--------|--------|-------|-------|
-| Perplexity | 25.84 | 4.82 | -81.3% |
-| ROUGE-L | 0.259 | 0.353 | +36.3% |
+| Perplexity | 35.07 | 1.88 | -94.6% |
+| ROUGE-L | 0.909 | 0.986 | +8.5% |
 
-Evaluated on 2026-03-17. ROUGE-L computed over 200 sampled examples with greedy decoding.
+Evaluated on 2026-03-30/31. ROUGE-L computed over 200 sampled examples with greedy decoding.
 
 ### Execution Accuracy
 
