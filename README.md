@@ -50,6 +50,34 @@ python scripts/push_to_hub.py               # push adapter + model card to HF Hu
 
 All scripts accept `--config configs/train_config.yaml` (default).
 
+### Inference (CLI)
+
+```bash
+python scripts/infer.py --prompt "Write a Python function to reverse a string"
+python scripts/infer.py --interactive                                          # REPL mode
+python scripts/infer.py --base --prompt "..."                                  # base model, no adapter
+python scripts/infer.py --adapter glen-louis/llama-3.2-3b-sql-qlora --prompt "..."  # adapter from HF Hub
+```
+
+## Live Demo
+
+`serve/modal_app.py` deploys the adapter on [Modal](https://modal.com) using vLLM + LoRA (T4 GPU, 5min idle scaledown).
+
+```bash
+modal deploy serve/modal_app.py                              # deploy, prints endpoint URL
+modal run serve/modal_app.py --question "..." --schema "..."  # test locally (cold start ~1-2 min)
+```
+
+Exposes a FastAPI POST endpoint at `/api` — request `{"question": "...", "schema": "..."}`, response `{"sql": "..."}`.
+
+`frontend/` is a Next.js single-page app (SQL.GEN) that calls the Modal endpoint.
+
+```bash
+cd frontend
+npm install
+npm run dev      # http://localhost:3000
+```
+
 ## Architecture
 
 | Component | Detail |
@@ -87,8 +115,11 @@ scripts/
   evaluate.py               ← before/after eval → writes results/*.json
   exec_eval.py              ← execution accuracy eval via Modal API (no GPU needed)
   push_to_hub.py            ← push adapter + auto-generated model card
+  infer.py                  ← CLI inference: --prompt, --interactive, --base, --adapter
 results/                    ← evaluation JSON files (source of truth for model card)
 outputs/                    ← git-ignored checkpoints and final adapter
+serve/modal_app.py          ← vLLM + LoRA inference server, deployed on Modal
+frontend/                   ← Next.js app (SQL.GEN) calling the Modal endpoint
 ```
 
 ## Requirements
